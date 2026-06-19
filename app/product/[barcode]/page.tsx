@@ -1,3 +1,38 @@
+const products = [
+  {
+    barcode: "8801234567890",
+    name: "단백질바 초코맛",
+    brand: "HINDSIGHT 테스트",
+    category: "식품/가공식품",
+    score: 82,
+    nutrition: {
+      calories: 210,
+      carbohydrate: 24,
+      sugar: 8,
+      protein: 15,
+      fat: 7,
+      saturatedFat: 3,
+      sodium: 180,
+    },
+  },
+  {
+    barcode: "8809876543210",
+    name: "제로 탄산음료",
+    brand: "HINDSIGHT 테스트",
+    category: "음료",
+    score: 90,
+    nutrition: {
+      calories: 0,
+      carbohydrate: 0,
+      sugar: 0,
+      protein: 0,
+      fat: 0,
+      saturatedFat: 0,
+      sodium: 35,
+    },
+  },
+];
+
 type ProductPageProps = {
   params: Promise<{
     barcode: string;
@@ -7,16 +42,9 @@ type ProductPageProps = {
 export default async function ProductPage({ params }: ProductPageProps) {
   const { barcode } = await params;
 
-  const res = await fetch(
-    `http://localhost:3000/api/products/barcode/${barcode}`,
-    {
-      cache: "no-store",
-    }
-  );
+  const product = products.find((item) => item.barcode === barcode);
 
-  const data = await res.json();
-
-  if (!data.found) {
+  if (!product) {
     return (
       <main className="min-h-screen bg-black text-white px-6 py-8">
         <p className="text-lime-400 text-sm mb-4">SCAN RESULT</p>
@@ -31,8 +59,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
       </main>
     );
   }
-
-  const product = data.product;
 
   return (
     <main className="min-h-screen bg-black text-white px-6 py-8">
@@ -57,34 +83,13 @@ export default async function ProductPage({ params }: ProductPageProps) {
         <h2 className="text-xl font-bold mb-4">영양성분</h2>
 
         <div className="grid grid-cols-2 gap-3">
-          <NutritionCard
-            label="열량"
-            value={`${product.nutrition.calories} kcal`}
-          />
-          <NutritionCard
-            label="탄수화물"
-            value={`${product.nutrition.carbohydrate} g`}
-          />
-          <NutritionCard
-            label="당류"
-            value={`${product.nutrition.sugar} g`}
-          />
-          <NutritionCard
-            label="단백질"
-            value={`${product.nutrition.protein} g`}
-          />
-          <NutritionCard
-            label="지방"
-            value={`${product.nutrition.fat} g`}
-          />
-          <NutritionCard
-            label="포화지방"
-            value={`${product.nutrition.saturatedFat} g`}
-          />
-          <NutritionCard
-            label="나트륨"
-            value={`${product.nutrition.sodium} mg`}
-          />
+          <NutritionCard label="열량" value={`${product.nutrition.calories} kcal`} />
+          <NutritionCard label="탄수화물" value={`${product.nutrition.carbohydrate} g`} />
+          <NutritionCard label="당류" value={`${product.nutrition.sugar} g`} />
+          <NutritionCard label="단백질" value={`${product.nutrition.protein} g`} />
+          <NutritionCard label="지방" value={`${product.nutrition.fat} g`} />
+          <NutritionCard label="포화지방" value={`${product.nutrition.saturatedFat} g`} />
+          <NutritionCard label="나트륨" value={`${product.nutrition.sodium} mg`} />
         </div>
       </section>
     </main>
